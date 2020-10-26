@@ -52,13 +52,9 @@ class GameFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
         binding.gameViewModel = viewModel
-
-        viewModel.score.observe(this, Observer {
-            binding.scoreText.text = it.toString()
-        })
-        viewModel.word.observe(this, Observer {
-            binding.wordText.text = it
-        })
+        //allows automatic updates to livedata layouts
+        binding.setLifecycleOwner(this)
+        
         viewModel.timeLeft.observe(this, Observer {
             binding.timerText.text = it
         })
