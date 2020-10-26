@@ -6,6 +6,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 
 class GameViewModel: ViewModel() {
@@ -24,9 +25,12 @@ class GameViewModel: ViewModel() {
 
     private val timer: CountDownTimer
 
-    private val _timeLeft = MutableLiveData<String>()
-    val timeLeft : LiveData<String>
+    private val _timeLeft = MutableLiveData<Long>()
+    val timeLeft : LiveData<Long>
         get() = _timeLeft
+    val timeLeftString = Transformations.map(timeLeft) {
+        DateUtils.formatElapsedTime(it / 1000)
+    }
 
     // The current word
     private val _word = MutableLiveData<String>()
@@ -38,13 +42,13 @@ class GameViewModel: ViewModel() {
     val score : LiveData<Int>
         get() = _score
 
-
-    // The list of words - the front of the list is the next word to guess
-    private lateinit var wordList: MutableList<String>
-
     private val _eventGameFinish = MutableLiveData<Boolean>()
     val eventGameFinish: LiveData<Boolean>
         get() = _eventGameFinish
+
+
+    // The list of words - the front of the list is the next word to guess
+    private lateinit var wordList: MutableList<String>
 
     init {
         _eventGameFinish.value = false
@@ -53,7 +57,7 @@ class GameViewModel: ViewModel() {
         _score.value = 0;
         timer = object : CountDownTimer(COUNTDOWN_TIME, ONE_SECOND) {
             override fun onTick(millisUntilFinished: Long) {
-                _timeLeft.value = DateUtils.formatElapsedTime(millisUntilFinished/1000)
+                _timeLeft.value = millisUntilFinished
             }
 
             override fun onFinish() {

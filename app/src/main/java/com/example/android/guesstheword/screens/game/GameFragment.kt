@@ -54,10 +54,6 @@ class GameFragment : Fragment() {
         binding.gameViewModel = viewModel
         //allows automatic updates to livedata layouts
         binding.setLifecycleOwner(this)
-        
-        viewModel.timeLeft.observe(this, Observer {
-            binding.timerText.text = it
-        })
 
         viewModel.eventGameFinish.observe(this, Observer {
             if(it){
